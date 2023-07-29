@@ -36,10 +36,7 @@ class SdrWrapper(object):
             if sdr_val == scanner_val:
                 continue
             setattr(sdr, key, scanner_val)
-            if key == 'gain' and scanner_val == 0:
-                sdr_val = 0.
-            else:
-                sdr_val = getattr(sdr, key)
+            sdr_val = 0. if key == 'gain' and scanner_val == 0 else getattr(sdr, key)
             if sdr_val != scanner_val:
                 setattr(scanner, key, sdr_val)
     def open_sdr(self):

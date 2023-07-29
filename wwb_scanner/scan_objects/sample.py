@@ -18,9 +18,7 @@ class Sample(JSONMixin):
     @property
     def spectrum_index(self):
         f = self.spectrum.sample_data['frequency']
-        if self.frequency not in f:
-            return None
-        return np.argwhere(f == self.frequency)[0][0]
+        return np.argwhere(f == self.frequency)[0][0] if self.frequency in f else None
     @property
     def frequency(self):
         return getattr(self, '_frequency', None)
@@ -36,9 +34,7 @@ class Sample(JSONMixin):
     @property
     def iq(self):
         ix = self.spectrum_index
-        if ix is None:
-            return None
-        return self.spectrum.sample_data['iq'][ix]
+        return None if ix is None else self.spectrum.sample_data['iq'][ix]
     @iq.setter
     def iq(self, value):
         if value is None:
@@ -58,9 +54,7 @@ class Sample(JSONMixin):
     @property
     def magnitude(self):
         ix = self.spectrum_index
-        if ix is None:
-            return None
-        return self.spectrum.sample_data['magnitude'][ix]
+        return None if ix is None else self.spectrum.sample_data['magnitude'][ix]
     @magnitude.setter
     def magnitude(self, value):
         if value is None:
@@ -81,9 +75,7 @@ class Sample(JSONMixin):
     @property
     def dbFS(self):
         ix = self.spectrum_index
-        if ix is None:
-            return None
-        return self.spectrum.sample_data['dbFS'][ix]
+        return None if ix is None else self.spectrum.sample_data['dbFS'][ix]
     @dbFS.setter
     def dbFS(self, value):
         if value is None:
@@ -122,7 +114,7 @@ class Sample(JSONMixin):
     def __repr__(self):
         return str(self)
     def __str__(self):
-        return '%s (%s dB)' % (self.formatted_frequency, self.dbFS)
+        return f'{self.formatted_frequency} ({self.dbFS} dB)'
 
 class TimeBasedSample(Sample):
     def __init__(self, **kwargs):

@@ -149,10 +149,7 @@ class GraphViewControls(BoxLayout):
         self.h_scrolling = False
     def on_zoom_btn_press(self, btn):
         self.cancel_zoom()
-        if btn == self.zoom_in_btn:
-            m = self.zoom_in
-        else:
-            m = self.zoom_out
+        m = self.zoom_in if btn == self.zoom_in_btn else self.zoom_out
         m()
         self.zoom_event = Clock.schedule_interval(m, self.zoom_timeout)
     def on_zoom_btn_release(self, btn):
@@ -248,12 +245,14 @@ class SpectrumGraphBase(RelativeLayout, JSONMixin):
                 if key not in d:
                     d[key] = val
                     continue
-                if 'min' in key:
-                    if val < d[key]:
-                        d[key] = val
-                elif 'max' in key:
-                    if val > d[key]:
-                        d[key] = val
+                if (
+                    'min' in key
+                    and val < d[key]
+                    or 'min' not in key
+                    and 'max' in key
+                    and val > d[key]
+                ):
+                    d[key] = val
         for attr, val in d.items():
             if not auto_x and attr.split('_')[0] == 'x':
                 continue

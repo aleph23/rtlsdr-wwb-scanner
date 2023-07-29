@@ -131,7 +131,7 @@ class SampleSet(JSONMixin):
 
         self.powers = Pxx
         if not np.array_equal(freqs, self.frequencies):
-            print('freq not equal: %s, %s' % (self.frequencies.size, freqs.size))
+            print(f'freq not equal: {self.frequencies.size}, {freqs.size}')
             self.frequencies = freqs
         self.raw = None
         self.collection.on_sample_set_processed(self)

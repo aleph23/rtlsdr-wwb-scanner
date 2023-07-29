@@ -37,9 +37,7 @@ class Action(object):
         return action(app)
     def __call__(self, app):
         cb = self.callback
-        if cb is not None:
-            return cb(action=self, app=app)
-        return self.do_action(app)
+        return cb(action=self, app=app) if cb is not None else self.do_action(app)
 
 class FileQuit(Action):
     name = 'file.quit'
@@ -180,10 +178,7 @@ class ScrolledTreeNode(BoxLayout, SortableNode):
 class SquareTexture(Widget):
     def get_rect_size(self):
         w, h = self.size
-        if h < w:
-            size = [h, h]
-        else:
-            size = [w, w]
+        size = [h, h] if h < w else [w, w]
         return size
     def set_rect_size(self, value):
         pass
@@ -247,7 +242,7 @@ class PlotsExport(Action, FileAction):
         _fn, ext = os.path.splitext(filename)
         if not len(ext):
             filename = os.path.extsep.join([_fn, 'csv'])
-        elif '*.%s' % (ext.lstrip('.')) not in filters:
+        elif f"*.{ext.lstrip('.')}" not in filters:
             self.app.root.show_message(
                 message='Only "csv" and "sdb2" files are currently supported',
             )

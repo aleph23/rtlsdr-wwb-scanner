@@ -24,7 +24,7 @@ class Color(dict):
         for v in vals:
             s = hex(v).split('0x')[1]
             if len(s) == 1:
-                s = '0%s' % (s)
+                s = f'0{s}'
             hexstr.append(s)
         return ''.join(hexstr)
     @classmethod
@@ -33,7 +33,7 @@ class Color(dict):
         d = {}
         i = 0
         while len(hexstr):
-            s = '0x%s' % (hexstr[:2])
+            s = f'0x{hexstr[:2]}'
             key = cls._color_keys[i]
             d[key] = float.fromhex(s) / 255.
             if len(hexstr) > 2:

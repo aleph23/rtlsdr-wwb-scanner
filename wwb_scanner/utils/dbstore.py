@@ -12,14 +12,12 @@ class JSONStorage(tinydb.JSONStorage):
     def read(self):
         # Get the file size
         self._handle.seek(0, os.SEEK_END)
-        size = self._handle.tell()
-
-        if not size:
-            # File is empty
-            return None
-        else:
+        if size := self._handle.tell():
             self._handle.seek(0)
             return numpyjson.load(self._handle)
+        else:
+            # File is empty
+            return None
     def write(self, data):
         self._handle.seek(0)
         serialized = numpyjson.dumps(data)
@@ -59,7 +57,7 @@ class DBStore(object):
         for table_name in ['scans_performed', 'scans_imported']:
             if table_name not in self.db.tables():
                 continue
-            print('migrating table "{}"'.format(table_name))
+            print(f'migrating table "{table_name}"')
             old_table = self.db.table(table_name)
             new_table = self.scan_db.table(table_name)
             eids = []
@@ -87,16 +85,15 @@ class DBStore(object):
     def get_scan_config(self, **kwargs):
         table = self.db.table('scan_configs')
         if kwargs.get('datetime'):
-            dbconfig = table.get(where('datetime')==kwargs.get('datetime'))
+            return table.get(where('datetime')==kwargs.get('datetime'))
         elif kwargs.get('eid'):
-            dbconfig = table.get(eid=kwargs.get('eid'))
+            return table.get(eid=kwargs.get('eid'))
         elif kwargs.get('name'):
-            dbconfig = table.get(where('name')==kwargs.get('name'))
+            return table.get(where('name')==kwargs.get('name'))
         elif table._last_id > 0:
-            dbconfig = table.get(eid=table._last_id)
+            return table.get(eid=table._last_id)
         else:
-            dbconfig = None
-        return dbconfig
+            return None
     def add_scan(self, spectrum, scan_config=None):
         if scan_config is None:
             scan_config = spectrum.scan_config

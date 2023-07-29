@@ -81,11 +81,10 @@ class SampleArray(JSONMixin):
     def _check_obj_type(self, other):
         if isinstance(other, SampleArray):
             data = other.data
+        elif isinstance(other, np.ndarray) and other.dtype == self.dtype:
+            data = other
         else:
-            if isinstance(other, np.ndarray) and other.dtype == self.dtype:
-                data = other
-            else:
-                raise Exception('Cannot extend this object type: {}'.format(other))
+            raise Exception(f'Cannot extend this object type: {other}')
         return data
     def append(self, other):
         if self.keep_sorted:
@@ -115,7 +114,7 @@ class SampleArray(JSONMixin):
         m = y[(window_size//2-1):-(window_size//2)]
 
         if m.size != x.size:
-            raise Exception('Smooth result size {} != data size {}'.format(m.size, x.size))
+            raise Exception(f'Smooth result size {m.size} != data size {x.size}')
 
         self.data['magnitude'] = m
         self.data['dbFS'] = dbmath.to_dB(m)

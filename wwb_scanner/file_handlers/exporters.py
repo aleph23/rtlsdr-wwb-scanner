@@ -66,11 +66,9 @@ class CSVExporter(BaseExporter):
         newline_chars = self.newline_chars
         delim = self.delimiter_char
         frequency_format = self.frequency_format
-        lines = []
         freqs = np.around(self.spectrum.sample_data['frequency'], decimals=3)
         dB = np.around(self.spectrum.sample_data['dbFS'], decimals=1)
-        for f, v in zip(freqs, dB):
-            lines.append(delim.join([str(f), str(v)]))
+        lines = [delim.join([str(f), str(v)]) for f, v in zip(freqs, dB)]
         return newline_chars.join(lines)
 
 class BaseWWBExporter(BaseExporter):
@@ -79,7 +77,7 @@ class BaseWWBExporter(BaseExporter):
         self.dt = kwargs.get('dt', datetime.datetime.utcnow())
     def set_filename(self, value):
         ext = self._extension
-        if os.path.splitext(value)[1].lower() != '.%s' % (ext):
+        if os.path.splitext(value)[1].lower() != f'.{ext}':
             value = '.'.join([os.path.splitext(value)[0], ext])
         super(BaseWWBExporter, self).set_filename(value)
     def build_attribs(self):

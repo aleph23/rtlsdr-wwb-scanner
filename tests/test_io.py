@@ -32,7 +32,7 @@ def test_exporters(data_files, tmpdir):
             assert not np.any(np.isnan(src_spectrum.sample_data['magnitude']))
             assert not np.any(np.isnan(src_spectrum.sample_data['dbFS']))
             for ext in ['csv', 'sdb2']:
-                exp_fn = p.join('{}_src.{}'.format(skey, ext))
+                exp_fn = p.join(f'{skey}_src.{ext}')
                 src_spectrum.export_to_file(filename=str(exp_fn))
                 imp_spectrum = Spectrum.import_from_file(str(exp_fn))
 

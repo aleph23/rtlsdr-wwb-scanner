@@ -54,8 +54,7 @@ class RootWidget(BoxLayout, JSONMixin):
         self._message_popup = None
     def _serialize(self):
         attrs = ['plot_container', 'scan_controls']
-        d = {attr:getattr(self, attr)._serialize() for attr in attrs}
-        return d
+        return {attr:getattr(self, attr)._serialize() for attr in attrs}
     def _deserialize(self, **kwargs):
         for key, data in kwargs.items():
             obj = getattr(self, key)
@@ -80,8 +79,7 @@ class PlotContainer(FloatLayout, JSONMixin):
         self.tool_panel.add_plot(plot)
         return plot
     def _serialize(self):
-        d = {'spectrum_graph':self.spectrum_graph._serialize()}
-        return d
+        return {'spectrum_graph':self.spectrum_graph._serialize()}
     def _deserialize(self, **kwargs):
         data = kwargs.get('spectrum_graph')
         self.spectrum_graph.instance_from_json(data)

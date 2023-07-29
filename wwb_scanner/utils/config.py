@@ -4,7 +4,7 @@ class Config(JSONMixin):
     def __init__(self, initdict=None, **kwargs):
         data = {}
         if initdict is not None:
-            data.update(initdict)
+            data |= initdict
         data.update(kwargs)
         if '__from_json__' in data:
             del data['__from_json__']

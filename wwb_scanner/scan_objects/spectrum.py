@@ -125,9 +125,8 @@ class Spectrum(JSONMixin):
         config = self.scan_config
         if config is None:
             config = self._scan_config = db_store.get_scan_config(eid=value)
-        else:
-            if config.get('eid') is None:
-                config.eid = value
+        elif config.get('eid') is None:
+            config.eid = value
     def _deserialize(self, **kwargs):
         sample_data = kwargs.get('sample_data')
         samples = kwargs.get('samples')
@@ -244,8 +243,7 @@ class Spectrum(JSONMixin):
         self.samples[sample.frequency] = sample
         return sample
     def iter_frequencies(self):
-        for key in sorted(self.samples.keys()):
-            yield key
+        yield from sorted(self.samples.keys())
     def iter_samples(self):
         for key in self.iter_frequencies():
             yield self.samples[key]
@@ -293,16 +291,15 @@ class TimeBasedSpectrum(Spectrum):
             if last_ts is None:
                 last_ts = min(samples[key])
                 sample = samples[key][last_ts]
+            elif last_ts in samples[key]:
+                sample = samples[key][last_ts]
             else:
-                if last_ts in samples[key]:
+                l = [ts for ts in samples[key] if last_ts < ts]
+                if len(l):
+                    last_ts = min(l)
                     sample = samples[key][last_ts]
                 else:
-                    l = [ts for ts in samples[key] if last_ts < ts]
-                    if not len(l):
-                        sample = None
-                    else:
-                        last_ts = min(l)
-                        sample = samples[key][last_ts]
+                    sample = None
             if sample is None:
                 break
             yield sample
