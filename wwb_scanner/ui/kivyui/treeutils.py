@@ -80,12 +80,8 @@ class SortableNode(TreeViewNode):
             return
         def iter_vals():
             vals = {getattr(n, prop) for n in self.nodes}
-            if self.descending:
-                it = reversed(sorted(vals))
-            else:
-                it = sorted(vals)
-            for v in it:
-                yield v
+            yield from reversed(sorted(vals)) if self.descending else sorted(vals)
+
         def iter_nodes():
             yielded = set()
             nodes = set(self.nodes)
@@ -96,7 +92,7 @@ class SortableNode(TreeViewNode):
                     yield n
                     nodes.discard(n)
 
-        nodes = [n for n in iter_nodes()]
+        nodes = list(iter_nodes())
         self.nodes = nodes
         tv._trigger_layout()
 
@@ -169,15 +165,9 @@ class SortHeaderCell(ButtonBehavior, BoxLayout):
             self.direction = 'None'
             self.icon_name = self._inactive_icon_name
         else:
-            if self.descending:
-                self.direction = 'down'
-            else:
-                self.direction = 'up'
+            self.direction = 'down' if self.descending else 'up'
             self.icon_name = self._active_icon_names.get(self.descending)
     def on_descending(self, instance, value):
         if self.selected:
-            if value:
-                self.direction = 'down'
-            else:
-                self.direction = 'up'
+            self.direction = 'down' if value else 'up'
             self.icon_name = self._active_icon_names.get(value)

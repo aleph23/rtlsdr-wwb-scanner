@@ -21,11 +21,11 @@ def read_rst():
     return rst
 
 def get_long_description():
-    if {'sdist', 'bdist_wheel'} & set(sys.argv):
-        long_description = convert_readme()
-    else:
-        long_description = read_rst()
-    return long_description
+    return (
+        convert_readme()
+        if {'sdist', 'bdist_wheel'} & set(sys.argv)
+        else read_rst()
+    )
 
 setup(
     name = "rtlsdr-wwb-scanner",

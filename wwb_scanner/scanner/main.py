@@ -89,12 +89,11 @@ class ScannerBase(JSONMixin):
     def save_to_dbstore(self):
         self.spectrum.save_to_dbstore()
     def _serialize(self):
-        d = dict(
+        return dict(
             config=self.config._serialize(),
             spectrum=self.spectrum._serialize(),
             sample_collection=self.sample_collection._serialize(),
         )
-        return d
     def _deserialize(self, **kwargs):
         data = kwargs.get('sample_collection')
         self.sample_collection = SampleCollection.from_json(data, scanner=self)
@@ -175,10 +174,7 @@ class Scanner(ScannerBase):
         self.sdr_wrapper.enable_scanner_updates = False
         with self.sdr_wrapper:
             sdr = self.sdr
-            if sdr is None:
-                gains = None
-            else:
-                gains = self.sdr.get_gains()
+            gains = None if sdr is None else self.sdr.get_gains()
         self.sdr_wrapper.enable_scanner_updates = True
         if gains is not None:
             gains = [gain / 10. for gain in gains]

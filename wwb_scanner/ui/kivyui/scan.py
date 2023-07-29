@@ -155,10 +155,7 @@ class ScanControls(BoxLayout, JSONMixin):
                 'smoothing_enabled', 'smoothing_factor',
                 'scaling_enabled', 'scaling_min_db', 'scaling_max_db']
         d = {key: getattr(self, key) for key in keys}
-        if len(self.serial_number):
-            d['serial_number'] = self.serial_number
-        else:
-            d['serial_number'] = None
+        d['serial_number'] = self.serial_number if len(self.serial_number) else None
         return d
     def _deserialize(self, **kwargs):
         keys = ['scan_range', 'gain', 'sweeps_per_scan', 'samples_per_sweep',
@@ -318,7 +315,7 @@ class ScanProgress(EventDispatcher):
         graph_widget.x_max = scan_range[1]
         self.name = ' - '.join([str(v) for v in scan_range])
         self.status_bar.progress = 0.
-        self.status_bar.message_text = 'Scanning %s' % (self.name)
+        self.status_bar.message_text = f'Scanning {self.name}'
         keys = {
             'config':[
                 'scan_range',

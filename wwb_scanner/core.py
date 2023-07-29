@@ -14,7 +14,7 @@ class JSONMixin(object):
     def from_json(cls, data, **kwargs):
         if isinstance(data, basestring):
             data = json.loads(data)
-        kwargs.update(data)
+        kwargs |= data
         kwargs['__from_json__'] = True
         obj = cls(**kwargs)
         obj._deserialize(**kwargs)
@@ -22,7 +22,7 @@ class JSONMixin(object):
     def instance_from_json(self, data, **kwargs):
         if isinstance(data, basestring):
             data = json.loads(data)
-        kwargs.update(data)
+        kwargs |= data
         self._deserialize(**kwargs)
     def to_json(self, **kwargs):
         d = self._serialize()
